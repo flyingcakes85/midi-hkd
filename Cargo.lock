@@ -3,5 +3,14 @@
 version = 3
 
 [[package]]
+name = "easy-args"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "581f953c4a79f682e2bc37a86e06490398a6b8c660d870c45e1d7b094aeb23b8"
+
+[[package]]
 name = "midi-hkd"
 version = "0.1.0"
+dependencies = [
+ "easy-args",
+]
