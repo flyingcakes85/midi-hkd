@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 easy-args = "0.3.0"
 home = "0.5.5"
+midir = "0.9.1"
