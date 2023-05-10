@@ -1,4 +1,31 @@
+use easy_args::{arg_spec, Args};
 use std::{error::Error, path::PathBuf};
+
+#[derive(Debug)]
+pub struct AppArgs {
+    config_path: PathBuf,
+    midi_device: u64,
+    velocity_threshold: u8,
+}
+
+impl AppArgs {
+    pub fn gather() -> Self {
+        let spec = arg_spec! {
+            config: String,
+            midi_device: u64,
+            velocity_threshold: u64,
+            help : bool,
+            version: bool ,
+        };
+        let args = spec.parse().unwrap();
+        // TODO : probably junky code;
+        Self {
+            config_path: config_path(args.string("config")).unwrap(),
+            midi_device: *args.uinteger("midi_device").unwrap_or(&0),
+            velocity_threshold: *args.uinteger("velocity_threshold").unwrap_or(&75) as u8,
+        }
+    }
+}
 
 fn default_config_path() -> PathBuf {
     let mut config_directory = match home::home_dir() {
