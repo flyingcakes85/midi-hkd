@@ -12,6 +12,7 @@ pub fn parse_config(config_text: String) -> Config {
     let config = Config {
         midi_device: value["midi_device"].as_integer().unwrap() as u64,
         velocity_threshold: value["velocity_threshold"].as_integer().unwrap() as u8,
+        // TODO : hotkeys should be map, not table
         hotkeys: value["hotkeys"].as_table().unwrap().clone(),
     };
 
