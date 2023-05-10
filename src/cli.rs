@@ -3,9 +3,9 @@ use std::{error::Error, path::PathBuf};
 
 #[derive(Debug)]
 pub struct AppArgs {
-    config_path: PathBuf,
-    midi_device: u64,
-    velocity_threshold: u8,
+    pub config_path: PathBuf,
+    pub midi_device: u64,
+    pub velocity_threshold: u8,
 }
 
 impl AppArgs {
