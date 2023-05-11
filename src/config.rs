@@ -80,3 +80,74 @@ fn get_octave_shift(value: &Table) -> i8 {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use toml::{Table, Value};
+
+    use super::{get_hotkeys, get_octave_shift};
+
+    fn get_valid_hotkeys() -> Table {
+        let mut x: toml::map::Map<String, Value> = Table::new();
+        x.insert(
+            String::from("C#5"),
+            Value::String(String::from("command 1")),
+        );
+        x.insert(
+            String::from("A-5"),
+            Value::String(String::from("command -flag")),
+        );
+        x.insert(
+            String::from("G3"),
+            Value::String(String::from("command -flag --more-flag")),
+        );
+
+        x
+    }
+
+    #[test]
+    fn hotkeys_success() {
+        let hotkeys = get_valid_hotkeys();
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(hotkeys.clone()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+
+        let parsed_hotkeys = get_hotkeys(&config);
+
+        assert_eq!(parsed_hotkeys, hotkeys);
+    }
+
+    #[test]
+    #[should_panic]
+    fn hotkeys_wrong_name() {
+        let hotkeys = get_valid_hotkeys();
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkey"), Value::Table(hotkeys.clone()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+
+        get_hotkeys(&config);
+    }
+
+    #[test]
+    fn hotkeys_empty() {
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(Table::new()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+
+        assert_eq!(Table::new(), get_hotkeys(&config))
+    }
+
+    #[test]
+    #[should_panic]
+    fn hotkeys_incorrect() {
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Integer(1));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+
+        get_hotkeys(&config);
+    }
+}
