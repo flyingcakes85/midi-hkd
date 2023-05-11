@@ -39,7 +39,7 @@ fn get_midi_device(value: &Table) -> u64 {
 fn get_velocity_threshold(value: &Table) -> u8 {
     let x = value.get("velocity_threshold");
     if x.is_none() {
-        0
+        75
     } else {
         let velocity_threshold = x.unwrap().as_integer();
         if velocity_threshold.is_none() {
@@ -85,7 +85,7 @@ fn get_octave_shift(value: &Table) -> i8 {
 mod tests {
     use toml::{Table, Value};
 
-    use super::{get_hotkeys, get_octave_shift};
+    use super::{get_hotkeys, get_velocity_threshold};
 
     fn get_valid_hotkeys() -> Table {
         let mut x: toml::map::Map<String, Value> = Table::new();
@@ -104,6 +104,8 @@ mod tests {
 
         x
     }
+
+    // tests for hotkeys
 
     #[test]
     fn hotkeys_success() {
@@ -149,5 +151,56 @@ mod tests {
         config.insert(String::from("midi_device"), Value::Integer(6));
 
         get_hotkeys(&config);
+    }
+
+    // tests for velocity threshold
+
+    #[test]
+    fn velocity_threshold_success() {
+        let hotkeys = get_valid_hotkeys();
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(hotkeys.clone()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+        config.insert(String::from("velocity_threshold"), Value::Integer(46));
+
+        let parsed_velocity_threshold = get_velocity_threshold(&config);
+
+        assert_eq!(parsed_velocity_threshold, 46);
+    }
+
+    #[test]
+    fn velocity_threshold_wrong_name() {
+        let hotkeys = get_valid_hotkeys();
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkey"), Value::Table(hotkeys.clone()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+        config.insert(String::from("velocity_trhshold"), Value::Integer(46));
+        assert_eq!(75, get_velocity_threshold(&config));
+    }
+
+    #[test]
+    fn default_velocity_threshold() {
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(Table::new()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+
+        assert_eq!(75, get_velocity_threshold(&config));
+    }
+
+    #[test]
+    fn velocity_threshold_incorrect() {
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(get_valid_hotkeys()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+        config.insert(
+            String::from("velocity_threshold"),
+            Value::String(String::from("a46")),
+        );
+
+        assert_eq!(75, get_velocity_threshold(&config));
     }
 }
