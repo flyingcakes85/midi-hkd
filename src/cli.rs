@@ -1,4 +1,4 @@
-use easy_args::{arg_spec, Args};
+use easy_args::arg_spec;
 use std::{error::Error, path::PathBuf};
 
 #[derive(Debug)]
