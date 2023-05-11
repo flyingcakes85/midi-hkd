@@ -7,6 +7,7 @@ pub struct AppArgs {
     pub midi_device: u64,
     pub velocity_threshold: u8,
     pub list_devices: bool,
+    pub octave_shift: i8,
 }
 
 impl AppArgs {
@@ -16,6 +17,7 @@ impl AppArgs {
             midi_device: u64,
             velocity_threshold: u64,
             list_devices: bool,
+            octave_shift: String,
             help : bool,
             version: bool ,
         };
@@ -26,6 +28,7 @@ impl AppArgs {
             midi_device: *args.uinteger("midi_device").unwrap_or(&0),
             velocity_threshold: *args.uinteger("velocity_threshold").unwrap_or(&75) as u8,
             list_devices: *args.boolean("list_devices").unwrap_or(&false),
+            octave_shift: args.string("octave_shift").unwrap().parse::<i8>().unwrap(),
         }
     }
 }

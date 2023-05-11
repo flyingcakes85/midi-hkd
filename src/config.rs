@@ -5,6 +5,7 @@ pub struct Config {
     pub midi_device: u64,
     pub velocity_threshold: u8,
     pub hotkeys: Table,
+    pub octave_shift: i8,
 }
 
 pub fn parse_config(config_text: String) -> Config {
@@ -14,6 +15,7 @@ pub fn parse_config(config_text: String) -> Config {
         velocity_threshold: value["velocity_threshold"].as_integer().unwrap() as u8,
         // TODO : hotkeys should be map, not table
         hotkeys: value["hotkeys"].as_table().unwrap().clone(),
+        octave_shift: value["hotkeys"].as_integer().unwrap() as i8,
     };
 
     config
