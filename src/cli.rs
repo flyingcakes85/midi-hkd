@@ -6,6 +6,7 @@ pub struct AppArgs {
     pub config_path: PathBuf,
     pub midi_device: u64,
     pub velocity_threshold: u8,
+    pub list_devices: bool,
 }
 
 impl AppArgs {
@@ -14,6 +15,7 @@ impl AppArgs {
             config: String,
             midi_device: u64,
             velocity_threshold: u64,
+            list_devices: bool,
             help : bool,
             version: bool ,
         };
@@ -23,6 +25,7 @@ impl AppArgs {
             config_path: config_path(args.string("config")).unwrap(),
             midi_device: *args.uinteger("midi_device").unwrap_or(&0),
             velocity_threshold: *args.uinteger("velocity_threshold").unwrap_or(&75) as u8,
+            list_devices: *args.boolean("list_devices").unwrap_or(&false),
         }
     }
 }

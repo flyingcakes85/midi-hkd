@@ -56,3 +56,21 @@ pub fn daemon(keymap: Table, midi_device: u8) -> Result<(), Box<dyn Error>> {
     println!("Closing connection");
     Ok(())
 }
+
+pub fn list_devices() -> Result<(), Box<dyn Error>> {
+    let mut midi_in = MidiInput::new("midir reading input")?;
+    midi_in.ignore(Ignore::None);
+
+    let in_ports = midi_in.ports();
+    match in_ports.len() {
+        0 => return Err("no input port found".into()),
+        _ => {
+            println!("\nAvailable input ports:");
+            for (i, p) in in_ports.iter().enumerate() {
+                println!("{}: {}", i, midi_in.port_name(p).unwrap());
+            }
+        }
+    };
+
+    Ok(())
+}
