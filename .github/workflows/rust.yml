@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Install ALSA
-      run: apt update && apt -y install alsa-tools
+      run: sudo apt update && sudo apt -y install alsa-tools
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --verbose
