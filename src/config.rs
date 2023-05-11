@@ -85,7 +85,7 @@ fn get_octave_shift(value: &Table) -> i8 {
 mod tests {
     use toml::{Table, Value};
 
-    use crate::config::get_octave_shift;
+    use crate::config::{get_midi_device, get_octave_shift};
 
     use super::{get_hotkeys, get_velocity_threshold};
 
@@ -254,5 +254,51 @@ mod tests {
         );
 
         assert_eq!(0, get_octave_shift(&config));
+    }
+
+    // tests for midi device
+
+    #[test]
+    fn midi_device_success() {
+        let hotkeys = get_valid_hotkeys();
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(hotkeys.clone()));
+        config.insert(String::from("midi_device"), Value::Integer(6));
+
+        assert_eq!(6, get_midi_device(&config));
+    }
+
+    #[test]
+    fn midi_device_wrong_name() {
+        let hotkeys = get_valid_hotkeys();
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkey"), Value::Table(hotkeys.clone()));
+        config.insert(String::from("midi_devic"), Value::Integer(6));
+
+        assert_eq!(0, get_octave_shift(&config));
+    }
+
+    #[test]
+    fn default_midi_device() {
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(Table::new()));
+
+        assert_eq!(0, get_midi_device(&config));
+    }
+
+    #[test]
+    fn midi_device_incorrect() {
+        let mut config = Table::new();
+
+        config.insert(String::from("hotkeys"), Value::Table(get_valid_hotkeys()));
+        config.insert(
+            String::from("midi_device"),
+            Value::String(String::from("midi_device")),
+        );
+
+        assert_eq!(0, get_midi_device(&config));
     }
 }
