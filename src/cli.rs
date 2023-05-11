@@ -28,7 +28,14 @@ impl AppArgs {
             midi_device: *args.uinteger("midi_device").unwrap_or(&0),
             velocity_threshold: *args.uinteger("velocity_threshold").unwrap_or(&75) as u8,
             list_devices: *args.boolean("list_devices").unwrap_or(&false),
-            octave_shift: args.string("octave_shift").unwrap().parse::<i8>().unwrap(),
+            octave_shift: {
+                let x = args.string("octave_shift");
+                if x.is_none() {
+                    0
+                } else {
+                    x.unwrap().parse::<i8>().unwrap_or(0)
+                }
+            },
         }
     }
 }
