@@ -14,10 +14,7 @@ fn id_to_key(key_id: u8, octave_shift: i8) -> String {
     )
 }
 
-// TODO : refactor
 pub fn daemon(keymap: Table, midi_device: u8, octave_shift: i8) -> Result<(), Box<dyn Error>> {
-    let mut input = String::new();
-
     let mut midi_in = MidiInput::new("midir reading input")?;
     midi_in.ignore(Ignore::None);
 
@@ -25,7 +22,6 @@ pub fn daemon(keymap: Table, midi_device: u8, octave_shift: i8) -> Result<(), Bo
     let in_ports = midi_in.ports();
     let in_port = &in_ports[midi_device as usize];
 
-    println!("\nOpening connection");
     let in_port_name = midi_in.port_name(in_port)?;
 
     // _conn_in needs to be a named parameter, because it needs to be kept alive until the end of the scope
@@ -50,8 +46,8 @@ pub fn daemon(keymap: Table, midi_device: u8, octave_shift: i8) -> Result<(), Bo
         in_port_name
     );
 
-    input.clear();
-    stdin().read_line(&mut input)?; // wait for next enter key press
+    // input.clear();
+    // stdin().read_line(&mut input)?; // wait for next enter key press
 
     println!("Closing connection");
     Ok(())
